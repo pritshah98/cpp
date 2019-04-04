@@ -24,7 +24,7 @@ int main (int argc, char **argv) {
 	struct sockaddr_in cliAddr;
 	unsigned int cliLen;
 	char buffer[150];
-	char *storedMessage = (char*) malloc(151);
+	char storedMessage[150];
 
 	char *ip_addr = argv[1];
 	unsigned short servPort = atoi(argv[2]);
@@ -45,11 +45,17 @@ int main (int argc, char **argv) {
 		recv(cliSocket, buffer, 149, 0);
 		char mode = buffer[1];
 		if (mode == 'd') {
-			cout << "here" << endl;
-			send(cliSocket, storedMessage, strlen(storedMessage), 0);
+			int sent = send(cliSocket, storedMessage, strlen(storedMessage), 0);
+			if (sent == 0) {
+				char empty[15] = "Empty message.";
+				send(cliSocket, empty, strlen(empty), 0);
+			}
 		}
 		if (mode == 'u') {
 			int count = 0;
+			if (strlen(storedMessage) > 1) {
+				memset(&storedMessage, 0, strlen(storedMessage));
+			}
 			for (int i = 0; i < strlen(buffer); i++) {
 				if (i != 0 && i != 1) {
 					storedMessage[count] = buffer[i];

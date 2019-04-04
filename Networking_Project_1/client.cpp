@@ -11,16 +11,11 @@ void download (int sock, char *mode) {
 	char buffer[150];
 	send(sock, mode, strlen(mode), 0);
 	recv(sock, buffer, 149, 0);
-	cout << "HERE" << endl;
-	if (strlen(buffer) == 0) {
-		cout << "Empty message." << endl;
-	} else {
-		cout << buffer << endl;
-		cout << "Server message downloaded." << endl;
-	}
+	cout << buffer << endl;
+	cout << "Server message downloaded." << endl;
 }
 
-void upload (int sock,	char *mode,	char *message, unsigned int messageLen) {
+void upload (int sock, char *mode, char *message) {
 	char *srvMessage = strcat(mode, message);
 	send(sock, srvMessage, strlen(srvMessage), 0);
 }
@@ -38,10 +33,8 @@ int main (int argc, char **argv) {
 
 	char *mode = argv[3];
 	char *message;
-	unsigned int messageLen;
 	if (argc == 5) {
 		message = argv[4];
-		messageLen = strlen(message);
 		if (strlen(message) > 150) {
 			cout << "Message is too many characters." << endl;
 			exit(1);
@@ -66,7 +59,7 @@ int main (int argc, char **argv) {
 	}
 
 	if (strncmp(mode, "-u", 2) == 0) {
-		upload(cliSock, mode, message, messageLen);
+		upload(cliSock, mode, message);
 	}
 
 	close(cliSock);
