@@ -1,7 +1,8 @@
 Run server with following commands:
 
 ./server <IP_Address> <Port #>
-ex. ./server 127.0.0.1 13000
+-------------------------------------
+ex: ./server 127.0.0.1 13000
 
 Run Client with following commands:
 
