@@ -1,10 +1,10 @@
 Battleship Game!
 
 Compile code with the following command:
-<br/> g++ battleship.cpp -o battleship
+<br/> g++ battleship.cpp -o bship
 
 Run code with the following command after compiling:
-<br/> ./battleship
+<br/> ./bship
 
 Guess Board:
 <br/> 1 -> represents a miss on the other player
