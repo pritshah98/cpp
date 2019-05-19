@@ -247,7 +247,6 @@ int main() {
 	setCShip("Cruiser", 3, cShips);
 	setCShip("Submarine", 3, cShips);
 	setCShip("Destroyer", 2, cShips);
-	cShips.showGrid();
 
 	cout << "Computer ships placed!" << endl;
 	cout << "Begin game!" << endl << endl;
