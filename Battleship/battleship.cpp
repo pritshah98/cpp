@@ -565,9 +565,13 @@ int main() {
 	hShips.initGrid();
 	hShips.showGrid();
 	setShip("Carrier", 5, hShips);
+	hShips.showGrid();
 	setShip("Battleship", 4, hShips);
+	hShips.showGrid();
 	setShip("Cruiser", 3, hShips);
+	hShips.showGrid();
 	setShip("Submarine", 3, hShips);
+	hShips.showGrid();
 	setShip("Destroyer", 2, hShips);
 	cout << endl << "Below are the ship placements you have made" << endl << endl;
 	hShips.showGrid();
