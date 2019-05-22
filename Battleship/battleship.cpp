@@ -359,8 +359,9 @@ void gameOver(Board &hShips, Board &cShips, int &hnumSunk, int &cnumSunk) {
 	}
 }
 
-void playEasy(Board &hShips, Board &cShips, Board &hGuesses, Board &cGuesses) {
-	cout << "Begin easy game!" << endl;
+void playGame(Board &hShips, Board &cShips, Board &hGuesses, Board &cGuesses, string level) {
+	cout << "You have selected " + level + "!" << endl; 
+	cout << "Begin game!" << endl;
 	cout << "-------------------------------------------------------------------" << endl << endl;
 	bool playing = true;
 	int hnumSunk = 0;
@@ -371,57 +372,7 @@ void playEasy(Board &hShips, Board &cShips, Board &hGuesses, Board &cGuesses) {
 			break;
 		}
 
-		computerTurn(hShips, cGuesses, hnumSunk, playing, "Easy");
-		if (playing == false) {
-			break;
-		}
-
-		cout << "Below are the guesses you have already made" << endl << endl;
-		hGuesses.showGrid();
-		cout << endl << "Below is the state of your ships" << endl << endl;
-		hShips.showGrid();
-	}
-	gameOver(hShips, cShips, hnumSunk, cnumSunk);
-}
-
-void playMedium(Board &hShips, Board &cShips, Board &hGuesses, Board &cGuesses) {
-	cout << "Begin medium game!" << endl;
-	cout << "-------------------------------------------------------------------" << endl << endl;
-	bool playing = true;
-	int hnumSunk = 0;
-	int cnumSunk = 0;
-	while (playing) {
-		humanTurn(cShips, hGuesses, cnumSunk, playing);
-		if (playing == false) {
-			break;
-		}
-
-		computerTurn(hShips, cGuesses, hnumSunk, playing, "Medium");
-		if (playing == false) {
-			break;
-		}
-
-		cout << "Below are the guesses you have already made" << endl << endl;
-		hGuesses.showGrid();
-		cout << endl << "Below is the state of your ships" << endl << endl;
-		hShips.showGrid();
-	}
-	gameOver(hShips, cShips, hnumSunk, cnumSunk);
-}
-
-void playHard(Board &hShips, Board &cShips, Board &hGuesses, Board &cGuesses) {
-	cout << "Begin hard game!" << endl;
-	cout << "-------------------------------------------------------------------" << endl << endl;
-	bool playing = true;
-	int hnumSunk = 0;
-	int cnumSunk = 0;
-	while (playing) {
-		humanTurn(cShips, hGuesses, cnumSunk, playing);
-		if (playing == false) {
-			break;
-		}
-
-		computerTurn(hShips, cGuesses, hnumSunk, playing, "Hard");
+		computerTurn(hShips, cGuesses, hnumSunk, playing, level);
 		if (playing == false) {
 			break;
 		}
@@ -475,13 +426,13 @@ int main() {
 	while (true) {
 		cin >> level;
 		if (level == "e" || level == "easy" || level == "E" || level == "EASY") {
-			playEasy(hShips, cShips, hGuesses, cGuesses);
+			playGame(hShips, cShips, hGuesses, cGuesses, "Easy");
 			break;
 		} else if (level == "m" || level == "medium" || level == "M" || level == "MEDIUM") {
-			playMedium(hShips, cShips, hGuesses, cGuesses);
+			playGame(hShips, cShips, hGuesses, cGuesses, "Medium");
 			break;
 		} else if (level == "h" || level == "hard" || level == "H" || level == "HARD") {
-			playHard(hShips, cShips, hGuesses, cGuesses);
+			playGame(hShips, cShips, hGuesses, cGuesses, "Hard");
 			break;
 		} else {
 			cout << "Entered in level is not available" << endl;
