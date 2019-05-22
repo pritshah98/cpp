@@ -5,7 +5,8 @@ Compile code with either of the following commands:
 <br/> gcc battleship.cpp -lstdc++
 
 Run code with the following command after compiling:
-<br/> ./bship
+<br/> ./bship (if compiled with g++)
+<br/> ./a.out (if compiled with gcc)
 
 Guess Board:
 <br/> 1 -> represents a miss on the other player

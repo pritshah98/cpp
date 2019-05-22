@@ -192,7 +192,6 @@ void setShip(string name, int size, Board& b) {
 
 void setCShip(string name, int size, Board &b) {
 	while (true) {
-		srand(time(NULL));
 		int dir = random(0, 1);
 		int x = random(0, 9);
 		int y = random(0, 9);
@@ -206,7 +205,7 @@ void setCShip(string name, int size, Board &b) {
 			for (int i = 0; i < size; i++) {
 				r.at(i) = x;
 				c.at(i) = y++;
-			} if (xval <= 9 || yval + size <= 10) {
+			} if (xval <= 9 && yval + size <= 10) {
 				if (b.occupied(r, c) == false) {
 					Ship temp(name, 'H', r, c, size);
 					b.placeShip(temp);
@@ -219,7 +218,7 @@ void setCShip(string name, int size, Board &b) {
 				c.at(i) = y;
 				r.at(i) = x++;
 			}
-			if (xval + size <= 10 || yval <= 9) {
+			if (xval + size <= 10 && yval <= 9) {
 				if (b.occupied(r, c) == false) {
 					Ship temp(name, 'V', r, c, size);
 					b.placeShip(temp);
@@ -286,6 +285,9 @@ void computerTurn(Board &hShips, Board &cGuesses, int &hnumSunk, bool &playing, 
 				break;
 			}
 		}
+		if (level == "Medium") {
+			
+		}
 	}
 	chitOrMiss = hShips.hitOrMiss(cxGuess, cyGuess);
 	if (chitOrMiss) {
@@ -340,12 +342,12 @@ void playEasy(Board &hShips, Board &cShips, Board &hGuesses, Board &cGuesses) {
 	int hnumSunk = 0;
 	int cnumSunk = 0;
 	while (playing) {
-		humanTurn(hShips, cShips, hGuesses, cGuesses, hnumSunk, playing);
+		humanTurn(cShips, hGuesses, cnumSunk, playing);
 		if (playing == false) {
 			break;
 		}
 
-		computerTurn(hShips, cShips, hGuesses, cGuesses, hnumSunk, playing, "Easy");
+		computerTurn(hShips, cGuesses, hnumSunk, playing, "Easy");
 		if (playing == false) {
 			break;
 		}
@@ -365,12 +367,12 @@ void playMedium(Board &hShips, Board &cShips, Board &hGuesses, Board &cGuesses) 
 	int hnumSunk = 0;
 	int cnumSunk = 0;
 	while (playing) {
-		humanTurn(hShips, cShips, hGuesses, cGuesses, hnumSunk, playing);
+		humanTurn(cShips, hGuesses, cnumSunk, playing);
 		if (playing == false) {
 			break;
 		}
 
-		computerTurn(hShips, cShips, hGuesses, cGuesses, hnumSunk, playing, "Medium");
+		computerTurn(hShips, cGuesses, hnumSunk, playing, "Medium");
 		if (playing == false) {
 			break;
 		}
@@ -390,12 +392,12 @@ void playHard(Board &hShips, Board &cShips, Board &hGuesses, Board &cGuesses) {
 	int hnumSunk = 0;
 	int cnumSunk = 0;
 	while (playing) {
-		humanTurn(hShips, cShips, hGuesses, cGuesses, hnumSunk, playing);
+		humanTurn(cShips, hGuesses, cnumSunk, playing);
 		if (playing == false) {
 			break;
 		}
 
-		computerTurn(hShips, cShips, hGuesses, cGuesses, hnumSunk, playing, "Hard");
+		computerTurn(hShips, cGuesses, hnumSunk, playing, "Hard");
 		if (playing == false) {
 			break;
 		}
@@ -434,11 +436,13 @@ int main() {
 	cout << "Setting computer ship placements..." << endl << endl;
 
 	cShips.initGrid();
+	srand(time(NULL));
 	setCShip("Carrier", 5, cShips);
 	setCShip("Battleship", 4, cShips);
 	setCShip("Cruiser", 3, cShips);
 	setCShip("Submarine", 3, cShips);
 	setCShip("Destroyer", 2, cShips);
+	cShips.showGrid();
 
 	cout << "Computer ships placed!" << endl;
 
