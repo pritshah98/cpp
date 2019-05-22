@@ -118,7 +118,7 @@ public:
 		grid[x][y] = 'M';
 	}
 
-	int getGridLocation(int x, int y) {
+	char getGridLocation(int x, int y) {
 		return grid[x][y];
 	}
 };
@@ -293,20 +293,72 @@ void humanTurn(Board &cShips, Board &hGuesses, int &cnumSunk, bool &playing) {
 	}
 }
 
-void computerTurn(Board &hShips, Board &cGuesses, int &hnumSunk, bool &playing, string level) {
+void computerTurn(Board &hShips, Board &cGuesses, int &hnumSunk, bool &playing, string level, bool *prevHit, int *prevx, int *prevy) {
 	int cxGuess;
 	int cyGuess;
 	bool chitOrMiss;
-	while (true) {
-		if (level == "Easy") {
+	if (level == "Easy") {
+		while (true) {
 			cxGuess = random(0, 9);
 			cyGuess = random(0, 9);
 			if (cGuesses.getGridLocation(cxGuess, cyGuess) == ' ') {
 				break;
 			}
 		}
-		if (level == "Medium") {
-
+	}
+	if (level == "Hard") {
+		bool selected = true;
+		while (selected) {
+			if (*prevHit) {
+				cxGuess = *prevx;
+				cyGuess = *prevy;
+				vector<Ship> *ships = hShips.getShips();
+				for(int i = 0; i < ships->size(); i++) {
+					vector<int> r = ships->at(i).getRow();
+					vector<int> c = ships->at(i).getCol();
+					for (int j = 0; j < ships->at(i).getSize(); j++) {
+						if (r.at(j) == *prevx && c.at(j) == *prevy) {
+							if ((j+1 < ships->at(i).getSize()) && (hShips.getGridLocation(r.at(j+1), c.at(j+1)) != 'H'
+								&& hShips.getGridLocation(r.at(j+1), c.at(j+1)) != 'M')) {
+								cxGuess = r.at(j+1);
+								cyGuess = c.at(j+1);
+								selected = false;
+								break;
+							} else if (j == ships->at(i).getSize() - 1 && hShips.getGridLocation(r.at(j), c.at(j)) == 'H') {
+								cxGuess = r.at(0);
+								cyGuess = c.at(0);
+								selected = false;
+								break;
+							} else if ((j == ships->at(i).getSize()) - 1 && (hShips.getGridLocation(r.at(j-1), c.at(j-1)) != 'H'
+								&& hShips.getGridLocation(r.at(j-1), c.at(j-1)) != 'M')) {
+								cxGuess = r.at(j-1);
+								cyGuess = c.at(j-1);
+								selected = false;
+								break;
+							} else if (j-1 >= 0) {
+								while (hShips.getGridLocation(r.at(j-1), c.at(j-1)) != 'S' && (j > 0) && (cxGuess != 0 && cyGuess != 0)) {
+									cxGuess = r.at(j-1);
+									cyGuess = c.at(j-1);
+									j -= 1;
+									cout << cxGuess << endl;
+									cout << cyGuess << endl;
+								}
+								selected = false;
+								break;
+							}
+						}
+					}
+				}
+			} else {
+				cxGuess = random(0, 9);
+				cyGuess = random(0, 9);
+				if (cGuesses.getGridLocation(cxGuess, cyGuess) == ' ') {
+					break;
+				}
+			}
+			if (selected == false) {
+				break;
+			}
 		}
 	}
 	chitOrMiss = hShips.hitOrMiss(cxGuess, cyGuess);
@@ -321,9 +373,11 @@ void computerTurn(Board &hShips, Board &cGuesses, int &hnumSunk, bool &playing, 
 				if (r.at(j) == cxGuess && c.at(j) == cyGuess) {
 					cout << "The computer hit your " + ships->at(i).getName() + " ship at (" + to_string(cxGuess+1) + ", " + to_string(cyGuess+1) + ")!" << endl << endl;
 					ships->at(i).hit();
+					(*prevHit) = true;
 					if (ships->at(i).isSunk()) {
 						cout << "The computer has sunk your " + ships->at(i).getName() + " ship!" << endl << endl;
 						hnumSunk++;
+						(*prevHit) = false;
 						if (hnumSunk == 5) {
 							playing = false;
 						}
@@ -331,6 +385,8 @@ void computerTurn(Board &hShips, Board &cGuesses, int &hnumSunk, bool &playing, 
 				}
 			}
 		}
+		(*prevx) = cxGuess;
+		(*prevy) = cyGuess;
 	} else {
 		cout << "The computer missed on its guess of (" + to_string(cxGuess+1) + ", " + to_string(cyGuess+1) + ")!" << endl << endl;
 		cGuesses.markMiss(cxGuess, cyGuess);
@@ -362,13 +418,16 @@ void playGame(Board &hShips, Board &cShips, Board &hGuesses, Board &cGuesses, st
 	bool playing = true;
 	int hnumSunk = 0;
 	int cnumSunk = 0;
+	bool prevHit = false;
+	int prevx = 0;
+	int prevy = 0;
 	while (playing) {
 		humanTurn(cShips, hGuesses, cnumSunk, playing);
 		if (playing == false) {
 			break;
 		}
 
-		computerTurn(hShips, cGuesses, hnumSunk, playing, level);
+		computerTurn(hShips, cGuesses, hnumSunk, playing, level, &prevHit, &prevx, &prevy);
 		if (playing == false) {
 			break;
 		}
@@ -419,14 +478,11 @@ int main() {
 
 	string level;
 	cout << "Select a level of difficulty to play!" << endl;
-	cout << "Easy (E), Medium (M) or Hard (H)" << endl;
+	cout << "Easy (E) or Hard (H)" << endl;
 	while (true) {
 		cin >> level;
 		if (level == "e" || level == "easy" || level == "E" || level == "EASY") {
 			playGame(hShips, cShips, hGuesses, cGuesses, "Easy");
-			break;
-		} else if (level == "m" || level == "medium" || level == "M" || level == "MEDIUM") {
-			playGame(hShips, cShips, hGuesses, cGuesses, "Medium");
 			break;
 		} else if (level == "h" || level == "hard" || level == "H" || level == "HARD") {
 			playGame(hShips, cShips, hGuesses, cGuesses, "Hard");
