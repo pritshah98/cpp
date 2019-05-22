@@ -299,53 +299,17 @@ void computerTurn(Board &hShips, Board &cGuesses, int &hnumSunk, bool &playing, 
 	bool chitOrMiss;
 	if (level == "Easy") {
 		while (true) {
-			cxGuess = random(0, 9);
-			cyGuess = random(0, 9);
-			if (cGuesses.getGridLocation(cxGuess, cyGuess) == ' ') {
-				break;
-			}
-		}
-	}
-	if (level == "Hard") {
-		bool selected = true;
-		while (selected) {
-			if (*prevHit) {
-				cxGuess = *prevx;
-				cyGuess = *prevy;
+			int probability = random(0, 9);
+			if (probability >= 7) {
 				vector<Ship> *ships = hShips.getShips();
-				for(int i = 0; i < ships->size(); i++) {
+				for (int i = 0; i < ships->size(); i++) {
 					vector<int> r = ships->at(i).getRow();
 					vector<int> c = ships->at(i).getCol();
 					for (int j = 0; j < ships->at(i).getSize(); j++) {
-						if (r.at(j) == *prevx && c.at(j) == *prevy) {
-							if ((j+1 < ships->at(i).getSize()) && (hShips.getGridLocation(r.at(j+1), c.at(j+1)) != 'H'
-								&& hShips.getGridLocation(r.at(j+1), c.at(j+1)) != 'M')) {
-								cxGuess = r.at(j+1);
-								cyGuess = c.at(j+1);
-								selected = false;
-								break;
-							} else if (j == ships->at(i).getSize() - 1 && hShips.getGridLocation(r.at(j), c.at(j)) == 'H') {
-								cxGuess = r.at(0);
-								cyGuess = c.at(0);
-								selected = false;
-								break;
-							} else if ((j == ships->at(i).getSize()) - 1 && (hShips.getGridLocation(r.at(j-1), c.at(j-1)) != 'H'
-								&& hShips.getGridLocation(r.at(j-1), c.at(j-1)) != 'M')) {
-								cxGuess = r.at(j-1);
-								cyGuess = c.at(j-1);
-								selected = false;
-								break;
-							} else if (j-1 >= 0) {
-								while (hShips.getGridLocation(r.at(j-1), c.at(j-1)) != 'S' && (j > 0) && (cxGuess != 0 && cyGuess != 0)) {
-									cxGuess = r.at(j-1);
-									cyGuess = c.at(j-1);
-									j -= 1;
-									cout << cxGuess << endl;
-									cout << cyGuess << endl;
-								}
-								selected = false;
-								break;
-							}
+						if (cGuesses.getGridLocation(r.at(j), c.at(j)) == ' ') {
+							cxGuess = r.at(j);
+							cyGuess = c.at(j);
+							break;
 						}
 					}
 				}
@@ -354,6 +318,151 @@ void computerTurn(Board &hShips, Board &cGuesses, int &hnumSunk, bool &playing, 
 				cyGuess = random(0, 9);
 				if (cGuesses.getGridLocation(cxGuess, cyGuess) == ' ') {
 					break;
+				}
+			}
+		}
+	}
+	if (level == "Medium") {
+		bool selected = true;
+		while (selected) {
+			int probHitNextPos = random(0, 9);
+			if (probHitNextPos >= 7) {
+				if (*prevHit) {
+					cxGuess = *prevx;
+					cyGuess = *prevy;
+					vector<Ship> *ships = hShips.getShips();
+					for(int i = 0; i < ships->size(); i++) {
+						vector<int> r = ships->at(i).getRow();
+						vector<int> c = ships->at(i).getCol();
+						for (int j = 0; j < ships->at(i).getSize(); j++) {
+							if (r.at(j) == *prevx && c.at(j) == *prevy) {
+								if ((j+1 < ships->at(i).getSize()) && (hShips.getGridLocation(r.at(j+1), c.at(j+1)) != 'H'
+									&& hShips.getGridLocation(r.at(j+1), c.at(j+1)) != 'M')) {
+									cxGuess = r.at(j+1);
+									cyGuess = c.at(j+1);
+									selected = false;
+									break;
+								} else if (j == ships->at(i).getSize() - 1 && hShips.getGridLocation(r.at(j), c.at(j)) == 'H') {
+									cxGuess = r.at(0);
+									cyGuess = c.at(0);
+									selected = false;
+									break;
+								} else if ((j == ships->at(i).getSize()) - 1 && (hShips.getGridLocation(r.at(j-1), c.at(j-1)) != 'H'
+									&& hShips.getGridLocation(r.at(j-1), c.at(j-1)) != 'M')) {
+									cxGuess = r.at(j-1);
+									cyGuess = c.at(j-1);
+									selected = false;
+									break;
+								} else if (j-1 >= 0) {
+									while (hShips.getGridLocation(r.at(j-1), c.at(j-1)) != 'S' && (j > 0) && (cxGuess != 0 && cyGuess != 0)) {
+										cxGuess = r.at(j-1);
+										cyGuess = c.at(j-1);
+										j -= 1;
+										cout << cxGuess << endl;
+										cout << cyGuess << endl;
+									}
+									selected = false;
+									break;
+								}
+							}
+						}
+					}
+				} 
+			} else {
+				int probability = random(0, 9);
+				if (probability == 9) {
+					vector<Ship> *ships = hShips.getShips();
+					for (int i = 0; i < ships->size(); i++) {
+						vector<int> r = ships->at(i).getRow();
+						vector<int> c = ships->at(i).getCol();
+						for (int j = 0; j < ships->at(i).getSize(); j++) {
+							if (cGuesses.getGridLocation(r.at(j), c.at(j)) == ' ') {
+								cxGuess = r.at(j);
+								cyGuess = c.at(j);
+								break;
+							}
+						}
+					}
+				} else {
+					cxGuess = random(0, 9);
+					cyGuess = random(0, 9);
+					if (cGuesses.getGridLocation(cxGuess, cyGuess) == ' ') {
+						break;
+					}
+				}
+			}
+			if (selected == false) {
+				break;
+			}
+		}
+	}
+	if (level == "Hard") {
+		bool selected = true;
+		while (selected) {
+			int probHitNextPos = random(0, 9);
+			if (probHitNextPos >= 4) {
+				if (*prevHit) {
+					cxGuess = *prevx;
+					cyGuess = *prevy;
+					vector<Ship> *ships = hShips.getShips();
+					for(int i = 0; i < ships->size(); i++) {
+						vector<int> r = ships->at(i).getRow();
+						vector<int> c = ships->at(i).getCol();
+						for (int j = 0; j < ships->at(i).getSize(); j++) {
+							if (r.at(j) == *prevx && c.at(j) == *prevy) {
+								if ((j+1 < ships->at(i).getSize()) && (hShips.getGridLocation(r.at(j+1), c.at(j+1)) != 'H'
+									&& hShips.getGridLocation(r.at(j+1), c.at(j+1)) != 'M')) {
+									cxGuess = r.at(j+1);
+									cyGuess = c.at(j+1);
+									selected = false;
+									break;
+								} else if (j == ships->at(i).getSize() - 1 && hShips.getGridLocation(r.at(j), c.at(j)) == 'H') {
+									cxGuess = r.at(0);
+									cyGuess = c.at(0);
+									selected = false;
+									break;
+								} else if ((j == ships->at(i).getSize()) - 1 && (hShips.getGridLocation(r.at(j-1), c.at(j-1)) != 'H'
+									&& hShips.getGridLocation(r.at(j-1), c.at(j-1)) != 'M')) {
+									cxGuess = r.at(j-1);
+									cyGuess = c.at(j-1);
+									selected = false;
+									break;
+								} else if (j-1 >= 0) {
+									while (hShips.getGridLocation(r.at(j-1), c.at(j-1)) != 'S' && (j > 0) && (cxGuess != 0 && cyGuess != 0)) {
+										cxGuess = r.at(j-1);
+										cyGuess = c.at(j-1);
+										j -= 1;
+										cout << cxGuess << endl;
+										cout << cyGuess << endl;
+									}
+									selected = false;
+									break;
+								}
+							}
+						}
+					}
+				} 
+			} else {
+				int probability = random(0, 9);
+				if (probability >= 7) {
+					vector<Ship> *ships = hShips.getShips();
+					for (int i = 0; i < ships->size(); i++) {
+						vector<int> r = ships->at(i).getRow();
+						vector<int> c = ships->at(i).getCol();
+						for (int j = 0; j < ships->at(i).getSize(); j++) {
+							if (cGuesses.getGridLocation(r.at(j), c.at(j)) == ' ') {
+								cxGuess = r.at(j);
+								cyGuess = c.at(j);
+								break;
+							}
+						}
+					}
+				} else {
+					cxGuess = random(0, 9);
+					cyGuess = random(0, 9);
+					if (cGuesses.getGridLocation(cxGuess, cyGuess) == ' ') {
+						break;
+					}
 				}
 			}
 			if (selected == false) {
@@ -472,17 +581,19 @@ int main() {
 	setCShip("Cruiser", 3, cShips);
 	setCShip("Submarine", 3, cShips);
 	setCShip("Destroyer", 2, cShips);
-	cShips.showGrid();
 
 	cout << "Computer ships placed!" << endl;
 
 	string level;
 	cout << "Select a level of difficulty to play!" << endl;
-	cout << "Easy (E) or Hard (H)" << endl;
+	cout << "Easy (E), Medium (M) or Hard (H)" << endl;
 	while (true) {
 		cin >> level;
 		if (level == "e" || level == "easy" || level == "E" || level == "EASY") {
 			playGame(hShips, cShips, hGuesses, cGuesses, "Easy");
+			break;
+		} else if (level == "m" || level == "medium" || level == "M" || level == "MEDIUM") {
+			playGame(hShips, cShips, hGuesses, cGuesses, "Medium");
 			break;
 		} else if (level == "h" || level == "hard" || level == "H" || level == "HARD") {
 			playGame(hShips, cShips, hGuesses, cGuesses, "Hard");
