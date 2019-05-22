@@ -9,10 +9,10 @@ Run code with the following command after compiling:
 <br/> ./a.out (if compiled with gcc)
 
 Guess Board:
-<br/> 1 -> represents a miss on the other player
-<br/> 9 -> represents a hit on a ship on the other player
+<br/> M -> represents a miss on the other player
+<br/> H -> represents a hit on a ship on the other player
 
 Ship Board:
-<br/> 1 -> represents a ship location
-<br/> 3 -> represents a missed guess by the other player
-<br/> 9 -> represents a ship location that has been hit by the other player
+<br/> S -> represents a ship location
+<br/> M -> represents a missed guess by the other player
+<br/> H -> represents a ship location that has been hit by the other player

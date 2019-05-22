@@ -54,12 +54,12 @@ private:
 	const static int rows = 10;
 	const static int columns = 10;
 	vector<Ship> ships;
-	int grid[rows][columns];
+	char grid[rows][columns];
 public:
 	void initGrid() {
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < columns; j++) {
-				grid[i][j] = 0;
+				grid[i][j] = ' ';
 			}
 		}
 	}
@@ -82,7 +82,7 @@ public:
 	}
 
 	bool hitOrMiss(int x, int y) {
-		if (grid[x][y] == 1) {
+		if (grid[x][y] == 'S') {
 			return true;
 		}
 		return false;
@@ -90,7 +90,7 @@ public:
 
 	bool occupied(vector<int> row, vector<int> col) {
 		for (int i = 0; i < row.size(); i++) {
-			if (grid[row[i]][col[i]] == 1) {
+			if (grid[row[i]][col[i]] == 'S') {
 				return true;
 			}
 		}
@@ -101,7 +101,7 @@ public:
 		vector<int> row = s.getRow();
 		vector<int> col = s.getCol();
 		for (int i = 0; i < row.size(); i++) {
-			grid[row[i]][col[i]] = 1;
+			grid[row[i]][col[i]] = 'S';
 		}
 		ships.push_back(s);
 	}
@@ -110,16 +110,12 @@ public:
 		return &ships;
 	}
 
-	void markGuess(int x, int y) {
-		grid[x][y] = 1;
-	}
-
 	void markHit(int x, int y) {
-		grid[x][y] = 9;
+		grid[x][y] = 'H';
 	}
 
 	void markMiss(int x, int y) {
-		grid[x][y] = 3;
+		grid[x][y] = 'M';
 	}
 
 	int getGridLocation(int x, int y) {
@@ -262,7 +258,7 @@ void humanTurn(Board &cShips, Board &hGuesses, int &cnumSunk, bool &playing) {
 		cin >> hyGuess;
 		hxGuess--;
 		hyGuess--;
-		if (hGuesses.getGridLocation(hxGuess, hyGuess) == 0) {
+		if (hGuesses.getGridLocation(hxGuess, hyGuess) == ' ') {
 			break;
 		} else {
 			cout << endl << "You have already guessed this location" << endl;
@@ -292,7 +288,7 @@ void humanTurn(Board &cShips, Board &hGuesses, int &cnumSunk, bool &playing) {
 		}
 	} else {
 		cout << endl << "That was a miss!" << endl << endl;
-		hGuesses.markGuess(hxGuess, hyGuess);
+		hGuesses.markMiss(hxGuess, hyGuess);
 		cShips.markMiss(hxGuess, hyGuess);
 	}
 }
@@ -305,7 +301,7 @@ void computerTurn(Board &hShips, Board &cGuesses, int &hnumSunk, bool &playing, 
 		if (level == "Easy") {
 			cxGuess = random(0, 9);
 			cyGuess = random(0, 9);
-			if (cGuesses.getGridLocation(cxGuess, cyGuess) == 0) {
+			if (cGuesses.getGridLocation(cxGuess, cyGuess) == ' ') {
 				break;
 			}
 		}
@@ -337,7 +333,7 @@ void computerTurn(Board &hShips, Board &cGuesses, int &hnumSunk, bool &playing, 
 		}
 	} else {
 		cout << "The computer missed on its guess of (" + to_string(cxGuess+1) + ", " + to_string(cyGuess+1) + ")!" << endl << endl;
-		cGuesses.markGuess(cxGuess, cyGuess);
+		cGuesses.markMiss(cxGuess, cyGuess);
 		hShips.markMiss(cxGuess, cyGuess);
 	}
 }
@@ -360,7 +356,7 @@ void gameOver(Board &hShips, Board &cShips, int &hnumSunk, int &cnumSunk) {
 }
 
 void playGame(Board &hShips, Board &cShips, Board &hGuesses, Board &cGuesses, string level) {
-	cout << "You have selected " + level + "!" << endl; 
+	cout << endl << "You have selected " + level + "!" << endl; 
 	cout << "Begin game!" << endl;
 	cout << "-------------------------------------------------------------------" << endl << endl;
 	bool playing = true;
@@ -417,6 +413,7 @@ int main() {
 	setCShip("Cruiser", 3, cShips);
 	setCShip("Submarine", 3, cShips);
 	setCShip("Destroyer", 2, cShips);
+	cShips.showGrid();
 
 	cout << "Computer ships placed!" << endl;
 
