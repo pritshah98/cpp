@@ -65,12 +65,16 @@ public:
 	}
 
 	void showGrid() {
-		cout << "       0      1      2      3      4      5      6      7      8      9   " << endl;
+		cout << "       1      2      3      4      5      6      7      8      9      10   " << endl;
 		cout << "--------------------------------------------------------------------------" << endl;
-		for (int i = 0; i < rows; i++) {
+		for (int i = 1; i <= rows; i++) {
 			cout << i;
-			for (int j = 0; j < columns; j++) {
-				cout << "  |   " << grid[i][j];
+			for (int j = 1; j <= columns; j++) {
+				if (i == 10 && j == 1) {
+					cout << " |   " << grid[i-1][j-1];
+				} else {
+					cout << "  |   " << grid[i-1][j-1];
+				}
 			}
 			cout << endl;
 		}
@@ -152,17 +156,32 @@ void setShip(string name, int size, Board& b) {
 		if (direction == "Vertical" || direction == "V" || direction == "v" || direction == "VERTICAL") {
 			cout << "You have chosen veritcal!" << endl;
 		}
-		cout << "Pick a starting x (0-9) coordinate for your ship (size of " + to_string(size) + ")" << endl;
-		cin >> x;
+		cout << "Pick a starting x (1-10) coordinate for your ship (size of " + to_string(size) + ")" << endl;
+		while (true) {
+			cin >> x;
+			if (x >= 1 && x <= 10) {
+				break;
+			} else {
+				cout << "Entered in x coordinate is out of range of the board" << endl;
+			}
+		}
 		int xval = *oldx;
-		cout << "Pick a starting y (0-9) coordinate for your ship (size of " + to_string(size) + ")" << endl;
-		cin >> y;
+		cout << "Pick a starting y (1-10) coordinate for your ship (size of " + to_string(size) + ")" << endl;
+		while (true) {
+			cin >> y;
+			if (y >= 1 && y <= 10) {
+				break;
+			} else {
+				cout << "Entered in y coordinate is out of range of the board" << endl;
+			}
+		}
 		int yval = *oldy;
 		if (direction == "Horizontal" || direction == "H" || direction == "h" || direction == "HORIZONTAL") {
 			for (int i = 0; i < size; i++) {
-				r.at(i) = x;
-				c.at(i) = y++;
-			} if (xval > 9 || yval + size > 10) {
+				r.at(i) = x-1;
+				c.at(i) = y-1;
+				y++;
+			} if (xval > 10 || yval + size > 11) {
 				cout << "Ship does not fit on board from entered in coordinates" << endl;
 			} else if (b.occupied(r, c) == false) {
 				Ship temp(name, 'H', r, c, size);
@@ -174,10 +193,11 @@ void setShip(string name, int size, Board& b) {
 		}
 		if (direction == "Vertical" || direction == "V" || direction == "v" || direction == "VERTICAL") {
 			for (int i = 0; i < size; i++) {
-				c.at(i) = y;
-				r.at(i) = x++;
+				c.at(i) = y-1;
+				r.at(i) = x-1;
+				x++;
 			}
-			if (xval + size > 10 || yval > 9) {
+			if (xval + size > 11 || yval > 10) {
 				cout << "Ship does not fit on board from entered in coordinates" << endl;
 			} else if (b.occupied(r, c) == false) {
 				Ship temp(name, 'V', r, c, size);
@@ -193,8 +213,8 @@ void setShip(string name, int size, Board& b) {
 void setCShip(string name, int size, Board &b) {
 	while (true) {
 		int dir = random(0, 1);
-		int x = random(0, 9);
-		int y = random(0, 9);
+		int x = random(1, 10);
+		int y = random(1, 10);
 		int *oldx = &x;
 		int *oldy = &y;
 		int xval = *oldx;
@@ -203,9 +223,10 @@ void setCShip(string name, int size, Board &b) {
 		vector<int> c (size);
 		if (dir == 0) {
 			for (int i = 0; i < size; i++) {
-				r.at(i) = x;
-				c.at(i) = y++;
-			} if (xval <= 9 && yval + size <= 10) {
+				r.at(i) = x-1;
+				c.at(i) = y-1;
+				y++;
+			} if (xval <= 10 && yval + size <= 11) {
 				if (b.occupied(r, c) == false) {
 					Ship temp(name, 'H', r, c, size);
 					b.placeShip(temp);
@@ -215,10 +236,11 @@ void setCShip(string name, int size, Board &b) {
 		}
 		if (dir == 1) {
 			for (int i = 0; i < size; i++) {
-				c.at(i) = y;
-				r.at(i) = x++;
+				c.at(i) = y-1;
+				r.at(i) = x-1;
+				x++;
 			}
-			if (xval + size <= 10 && yval <= 9) {
+			if (xval + size <= 11 && yval <= 10) {
 				if (b.occupied(r, c) == false) {
 					Ship temp(name, 'V', r, c, size);
 					b.placeShip(temp);
@@ -238,6 +260,8 @@ void humanTurn(Board &cShips, Board &hGuesses, int &cnumSunk, bool &playing) {
 		cin >> hxGuess;
 		cout << "Enter in a y location" << endl;
 		cin >> hyGuess;
+		hxGuess--;
+		hyGuess--;
 		if (hGuesses.getGridLocation(hxGuess, hyGuess) == 0) {
 			break;
 		} else {
@@ -286,7 +310,7 @@ void computerTurn(Board &hShips, Board &cGuesses, int &hnumSunk, bool &playing, 
 			}
 		}
 		if (level == "Medium") {
-			
+
 		}
 	}
 	chitOrMiss = hShips.hitOrMiss(cxGuess, cyGuess);
@@ -299,7 +323,7 @@ void computerTurn(Board &hShips, Board &cGuesses, int &hnumSunk, bool &playing, 
 			vector<int> c = ships->at(i).getCol();
 			for (int j = 0; j < ships->at(i).getSize(); j++) {
 				if (r.at(j) == cxGuess && c.at(j) == cyGuess) {
-					cout << "The computer hit your " + ships->at(i).getName() + " ship at (" + to_string(cxGuess) + ", " + to_string(cyGuess) + ")!" << endl << endl;
+					cout << "The computer hit your " + ships->at(i).getName() + " ship at (" + to_string(cxGuess+1) + ", " + to_string(cyGuess+1) + ")!" << endl << endl;
 					ships->at(i).hit();
 					if (ships->at(i).isSunk()) {
 						cout << "The computer has sunk your " + ships->at(i).getName() + " ship!" << endl << endl;
@@ -312,7 +336,7 @@ void computerTurn(Board &hShips, Board &cGuesses, int &hnumSunk, bool &playing, 
 			}
 		}
 	} else {
-		cout << "The computer missed on its guess of (" + to_string(cxGuess) + ", " + to_string(cyGuess) + ")!" << endl << endl;
+		cout << "The computer missed on its guess of (" + to_string(cxGuess+1) + ", " + to_string(cyGuess+1) + ")!" << endl << endl;
 		cGuesses.markGuess(cxGuess, cyGuess);
 		hShips.markMiss(cxGuess, cyGuess);
 	}
@@ -442,7 +466,6 @@ int main() {
 	setCShip("Cruiser", 3, cShips);
 	setCShip("Submarine", 3, cShips);
 	setCShip("Destroyer", 2, cShips);
-	cShips.showGrid();
 
 	cout << "Computer ships placed!" << endl;
 
