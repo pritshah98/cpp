@@ -1,6 +1,6 @@
 Battleship Game!
 
-Compile code with the following command:
+Compile code with either of the following commands:
 <br/> g++ battleship.cpp -o bship
 <br/> gcc battleship.cpp -lstdc++
 

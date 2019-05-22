@@ -230,7 +230,7 @@ void setCShip(string name, int size, Board &b) {
 	}
 }
 
-void humanTurn(Board &hShips, Board &cShips, Board &hGuesses, Board &cGuesses, int &cnumSunk, bool &playing) {
+void humanTurn(Board &cShips, Board &hGuesses, int &cnumSunk, bool &playing) {
 	int hxGuess;
 	int hyGuess;
 	bool hitOrMiss;
@@ -274,7 +274,7 @@ void humanTurn(Board &hShips, Board &cShips, Board &hGuesses, Board &cGuesses, i
 	}
 }
 
-void computerTurn(Board &hShips, Board &cShips, Board &hGuesses, Board &cGuesses, int &hnumSunk, bool &playing, string level) {
+void computerTurn(Board &hShips, Board &cGuesses, int &hnumSunk, bool &playing, string level) {
 	int cxGuess;
 	int cyGuess;
 	bool chitOrMiss;
