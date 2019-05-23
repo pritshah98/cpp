@@ -141,7 +141,7 @@ void setShip(string name, int size, Board& b) {
 			cin >> direction;
 			if (direction != "Horizontal" && direction != "H" && direction != "h" && direction != "HORIZONTAL"
 				&& direction != "Vertical" && direction != "V" && direction != "v" && direction != "VERTICAL") {
-				cout << "Entered in direction is not available" << endl;
+				cout << "Entered in direction is not horizontal or vertical. Please re-enter the desired direction" << endl;
 			} else {
 				break;
 			}
@@ -150,25 +150,37 @@ void setShip(string name, int size, Board& b) {
 			cout << "You have chosen horizontal!" << endl;
 		}
 		if (direction == "Vertical" || direction == "V" || direction == "v" || direction == "VERTICAL") {
-			cout << "You have chosen veritcal!" << endl;
+			cout << "You have chosen vertical!" << endl;
 		}
-		cout << "Pick a starting x (1-10) coordinate for your ship (size of " + to_string(size) + ")" << endl;
+		cout << "Pick a starting row (1-10) number for your ship (size of " + to_string(size) + ")" << endl;
 		while (true) {
 			cin >> x;
+			while (cin.fail()) {
+				cout << "Please enter in a valid integer number" << endl;
+				cin.clear();
+				cin.ignore(256, '\n');
+				cin >> x;
+			}
 			if (x >= 1 && x <= 10) {
 				break;
 			} else {
-				cout << "Entered in x coordinate is out of range of the board" << endl;
+				cout << "Entered in row number is out of range of the board. Please choose a different row number" << endl;
 			}
 		}
 		int xval = *oldx;
-		cout << "Pick a starting y (1-10) coordinate for your ship (size of " + to_string(size) + ")" << endl;
+		cout << "Pick a starting column (1-10) number for your ship (size of " + to_string(size) + ")" << endl;
 		while (true) {
 			cin >> y;
+			while (cin.fail()) {
+				cout << "Please enter in a valid integer number" << endl;
+				cin.clear();
+				cin.ignore(256, '\n');
+				cin >> y;
+			}
 			if (y >= 1 && y <= 10) {
 				break;
 			} else {
-				cout << "Entered in y coordinate is out of range of the board" << endl;
+				cout << "Entered in column number is out of range of the board. Please choose a different column number" << endl;
 			}
 		}
 		int yval = *oldy;
@@ -178,13 +190,13 @@ void setShip(string name, int size, Board& b) {
 				c.at(i) = y-1;
 				y++;
 			} if (xval > 10 || yval + size > 11) {
-				cout << "Ship does not fit on board from entered in coordinates" << endl;
+				cout << "Ship does not fit on board from entered in coordinates. Please choose a different set of coordinates" << endl;
 			} else if (b.occupied(r, c) == false) {
 				Ship temp(name, 'H', r, c, size);
 				b.placeShip(temp);
 				break;
 			} else {
-				cout << "Entered in coordinates are currently occupied by another ship" << endl;
+				cout << "Entered in coordinates are currently occupied by another ship. Please choose a different set of coordinates" << endl;
 			}
 		}
 		if (direction == "Vertical" || direction == "V" || direction == "v" || direction == "VERTICAL") {
@@ -252,10 +264,36 @@ void humanTurn(Board &cShips, Board &hGuesses, int &cnumSunk, bool &playing) {
 	int hyGuess;
 	bool hitOrMiss;
 	while (true) {
-		cout << "Enter in an x location" << endl;
-		cin >> hxGuess;
-		cout << "Enter in a y location" << endl;
-		cin >> hyGuess;
+		cout << "Enter in a row number" << endl;
+		while (true) {
+			cin >> hxGuess;
+			while (cin.fail()) {
+				cout << "Please enter in a valid integer number" << endl;
+				cin.clear();
+				cin.ignore(256, '\n');
+				cin >> hxGuess;
+			}
+			if (hxGuess >= 1 && hxGuess <= 10) {
+				break;
+			} else {
+				cout << "Entered in row is out of range" << endl;
+			}
+		}
+		cout << "Enter in a column number" << endl;
+		while (true) {
+			cin >> hyGuess;
+			while (cin.fail()) {
+				cout << "Please enter in a valid integer number" << endl;
+				cin.clear();
+				cin.ignore(256, '\n');
+				cin >> hyGuess;
+			}
+			if (hyGuess >= 1 && hyGuess <= 10) {
+				break;
+			} else {
+				cout << "Entered in column is out of range" << endl;
+			}
+		}
 		hxGuess--;
 		hyGuess--;
 		if (hGuesses.getGridLocation(hxGuess, hyGuess) == ' ') {
@@ -277,7 +315,7 @@ void humanTurn(Board &cShips, Board &hGuesses, int &cnumSunk, bool &playing) {
 				if (r.at(j) == hxGuess && c.at(j) == hyGuess) {
 					ships->at(i).hit();
 					if (ships->at(i).isSunk()) {
-						cout << "You have sunk the computer's " + ships->at(i).getName() + " ship!" << endl;
+						cout << "You have sunk the computer's " + ships->at(i).getName() + " ship!" << endl << endl;
 						cnumSunk++;
 						if (cnumSunk == 5) {
 							playing = false;
